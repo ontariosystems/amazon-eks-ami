@@ -6,6 +6,10 @@ set -o errexit
 IFS=$'\n\t'
 export AWS_DEFAULT_OUTPUT="json"
 
+if [[ "$ENABLE_FIPS" == "true" ]]; then
+  export AWS_USE_FIPS_ENDPOINT="true"
+fi
+
 ################################################################################
 ### Validate Required Arguments ################################################
 ################################################################################
@@ -280,7 +284,7 @@ BINARIES=(
   aws-iam-authenticator
 )
 for binary in ${BINARIES[*]}; do
-  if [[ -n "$AWS_ACCESS_KEY_ID" ]]; then
+  if [[ "$PRIVATE_BUCKET" == "true" ]]; then
     echo "AWS cli present - using it to copy binaries from s3."
     aws s3 cp --region $BINARY_BUCKET_REGION $S3_PATH/$binary .
     aws s3 cp --region $BINARY_BUCKET_REGION $S3_PATH/$binary.sha256 .
@@ -314,7 +318,7 @@ if [ "$PULL_CNI_FROM_GITHUB" = "true" ]; then
   sudo sha512sum -c "${CNI_PLUGIN_FILENAME}.tgz.sha512"
   rm "${CNI_PLUGIN_FILENAME}.tgz.sha512"
 else
-  if [[ -n "$AWS_ACCESS_KEY_ID" ]]; then
+  if [[ "$PRIVATE_BUCKET" == "true" ]]; then
     echo "AWS cli present - using it to copy binaries from s3."
     aws s3 cp --region $BINARY_BUCKET_REGION $S3_PATH/${CNI_PLUGIN_FILENAME}.tgz .
     aws s3 cp --region $BINARY_BUCKET_REGION $S3_PATH/${CNI_PLUGIN_FILENAME}.tgz.sha256 .
@@ -375,7 +379,7 @@ sudo chmod +x /etc/eks/max-pods-calculator.sh
 ### ECR CREDENTIAL PROVIDER ####################################################
 ################################################################################
 ECR_CREDENTIAL_PROVIDER_BINARY="ecr-credential-provider"
-if [[ -n "$AWS_ACCESS_KEY_ID" ]]; then
+if [[ "$PRIVATE_BUCKET" == "true" ]]; then
   echo "AWS cli present - using it to copy ${ECR_CREDENTIAL_PROVIDER_BINARY} from s3."
   aws s3 cp --region $BINARY_BUCKET_REGION $S3_PATH/$ECR_CREDENTIAL_PROVIDER_BINARY .
 else
