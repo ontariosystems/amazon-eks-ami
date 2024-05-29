@@ -6,9 +6,6 @@ set -o errexit
 IFS=$'\n\t'
 export AWS_DEFAULT_OUTPUT="json"
 
-if [[ "$ENABLE_FIPS" == "true" ]]; then
-  export AWS_USE_FIPS_ENDPOINT="true"
-fi
 
 ################################################################################
 ### Validate Required Arguments ################################################
@@ -30,12 +27,19 @@ validate_env_set CACHE_CONTAINER_IMAGES
 validate_env_set CNI_PLUGIN_VERSION
 validate_env_set CONTAINERD_VERSION
 validate_env_set DOCKER_VERSION
+validate_env_set ENABLE_FIPS
 validate_env_set KUBERNETES_BUILD_DATE
 validate_env_set KUBERNETES_VERSION
 validate_env_set PAUSE_CONTAINER_VERSION
+validate_env_set PRIVATE_BUCKET
 validate_env_set PULL_CNI_FROM_GITHUB
 validate_env_set RUNC_VERSION
 validate_env_set WORKING_DIR
+
+if [[ "$ENABLE_FIPS" == "true" ]]; then
+  export AWS_USE_FIPS_ENDPOINT="true"
+fi
+
 
 ################################################################################
 ### Machine Architecture #######################################################
