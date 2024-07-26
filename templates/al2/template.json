@@ -199,6 +199,7 @@
         "CNI_PLUGIN_VERSION={{user `cni_plugin_version`}}",
         "CONTAINERD_VERSION={{user `containerd_version`}}",
         "DOCKER_VERSION={{user `docker_version`}}",
+        "ENABLE_FIPS={{user `enable_fips`}}",
         "KUBERNETES_BUILD_DATE={{user `kubernetes_build_date`}}",
         "KUBERNETES_VERSION={{user `kubernetes_version`}}",
         "PAUSE_CONTAINER_VERSION={{user `pause_container_version`}}",
